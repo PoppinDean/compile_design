@@ -57,6 +57,7 @@ struct bound // 结构：数组上下界
 
 struct array // 结构：数组
 {
+    type tp;                 // 数组类型
     vector<bound> boundrays; // 数组各维上下界
 };
 
