@@ -2,7 +2,7 @@
 
 ## 符号表接口
 
-|函数名| <div style="width:190pt">参数</div> |<div style="width:140pt">返回值</div> |作用|
+|函数名| <div style="width:260px">参数</div> |<div style="width:190px">返回值</div> |作用|
 |------|-----|-----|----|
 |STRUCTINFO::isrecord|string name 类型名字 |type * <br/>返回一个类型指针|判断该某一类型是否属于该结构，若是返回该类型指针，否则返回NULL|
 |FUNC::isParameter|string name 标识符名字 |parameter * <br/>返回一个类型指针|判断该标识符是否是函数参数，若是返回指向该参数信息的指针，否则返回NULL|
