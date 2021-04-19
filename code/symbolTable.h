@@ -100,7 +100,7 @@ public:
 
 /**
  * 判断该某一类型是否属于该结构，若是返回该类型指针，否则返回NULL
- * @par name 名字
+ * @par name 类型名字
  * @return 返回一个类型指针
  */
 type *STRUCTINFO::isrecord(string name)
@@ -173,7 +173,7 @@ void SYMBOLTABLE::del(string name)
 
 /**
  * 符号表查找表项函数：按给定的名字查表。若找到返回表项指针，否则返回NULL
- * @par name 名字
+ * @par name 给定查找的名字
  * @return 返回一个表项指针
  */
 TABLEITEM *SYMBOLTABLE::find(string name)
@@ -189,7 +189,7 @@ TABLEITEM *SYMBOLTABLE::find(string name)
 
 /**
  * 符号表查找表项函数：按给定的名字查表(在全局范围内寻找，注意与find区分)若找到返回表项指针，否则返回NULL
- * @par name 名字
+ * @par name 给定查找的名字名字
  * @return 返回一个表项指针
  */
 TABLEITEM *SYMBOLTABLE::findInALL(string name)
