@@ -43,12 +43,6 @@ struct parameter // 结构：参数
     int valueType; // 为0传值调用，为1引用调用
 };
 
-struct func // 结构：函数
-{
-    types returnType;        // 返回值类型
-    vector<parameter> *list; // 参数列表
-};
-
 struct bound // 结构：数组上下界
 {
     int upperBound; // 上界
@@ -57,13 +51,23 @@ struct bound // 结构：数组上下界
 
 struct array // 结构：数组
 {
-    type tp;                 // 数组类型
-    vector<bound> boundrays; // 数组各维上下界
+    type tp;                  // 数组类型
+    vector<bound> *boundrays; // 数组各维上下界
 };
 
-struct structInfo // 结构：结构信息
+class STRUCTINFO // 类：结构信息
 {
-    vector<type> records;
+    map<string, type> *records;
+
+    type *isrecord(string name); // 判断是否属于该结构
+};
+
+class FUNC // 类：函数
+{
+    types returnType;             // 返回值类型
+    map<string, parameter> *list; // 参数列表
+
+    parameter *isParameter(string name); // 判断该标识符是否是函数参数
 };
 
 class TABLEITEM //类：符号表表项，代表每个标识符的信息
@@ -89,9 +93,42 @@ public:
     void insert(TABLEITEM item);                               // 符号表增添表项函数
     void del(string name);                                     // 符号表删除表项函数
     TABLEITEM *find(string name);                              // 符号表查找表项函数：按给定的名字查表
+    TABLEITEM *findInALL(string name);                         // 符号表查找表项函数（全局范围内寻找）
     SYMBOLTABLE *locate(TABLEITEM item);                       // 符号表定位操作函数
     SYMBOLTABLE *relocate();                                   // 符号表重定位操作函数
 };
+
+/**
+ * 判断该某一类型是否属于该结构，若是返回该类型指针，否则返回NULL
+ * @par name 名字
+ * @return 返回一个类型指针
+ */
+type *STRUCTINFO::isrecord(string name)
+{
+    std::map<string, type>::iterator iter = records->find(name);
+    if (iter != records->end()) // 如果查找到返回类型指针
+    {
+        return &(iter->second);
+    }
+    else //否则返回NULL
+        return NULL;
+}
+
+/**
+ * 判断该标识符是否是函数参数，若是返回指向该参数信息的指针，否则返回NULL
+ * @par name 标识符名字
+ * @return 返回一个参数信息指针
+ */
+parameter *FUNC::isParameter(string name)
+{
+    std::map<string, parameter>::iterator iter = list->find(name);
+    if (iter != list->end()) // 如果查找到返回参数指针
+    {
+        return &(iter->second);
+    }
+    else //否则返回NULL
+        return NULL;
+}
 
 /**
  * TABLEITEM表项构造函数
@@ -135,23 +172,41 @@ void SYMBOLTABLE::del(string name)
 }
 
 /**
- * 符号表查找表项函数：按给定的名字查表
+ * 符号表查找表项函数：按给定的名字查表。若找到返回表项指针，否则返回NULL
  * @par name 名字
  * @return 返回一个表项指针
  */
 TABLEITEM *SYMBOLTABLE::find(string name)
 {
     std::map<string, TABLEITEM>::iterator iter = items.find(name);
-    if (iter != items.end())
+    if (iter != items.end()) // 若找到返回表项指针
     {
-        return &iter->second;
+        return &(iter->second);
     }
-    else
+    else // 否则返回NULL
         return NULL;
 }
 
 /**
+ * 符号表查找表项函数：按给定的名字查表(在全局范围内寻找，注意与find区分)若找到返回表项指针，否则返回NULL
+ * @par name 名字
+ * @return 返回一个表项指针
+ */
+TABLEITEM *SYMBOLTABLE::findInALL(string name)
+{
+    TABLEITEM *item = find(name);
+    if (item != NULL)
+        return item;
+    else if (lastLevel == NULL) // 若无父表，即当前为主表
+        return NULL;
+    else // 类似递归查询：对父表进行查询
+        return lastLevel->findInALL(name);
+}
+
+/**
  * 符号表定位操作函数
+ * @par item 需要创建子符号表的表项
+ * @return 返回一个指向子符号表的指针
  */
 SYMBOLTABLE *SYMBOLTABLE::locate(TABLEITEM item)
 {
@@ -160,6 +215,7 @@ SYMBOLTABLE *SYMBOLTABLE::locate(TABLEITEM item)
 
 /**
  * 符号表重定位操作函数
+ * @return 返回指向父符号表的指针
  */
 SYMBOLTABLE *SYMBOLTABLE::relocate()
 {
