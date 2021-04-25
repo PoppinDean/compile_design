@@ -46,6 +46,7 @@ class STRUCTINFO // 类：结构信息
 {
     map<string, type> *records;
 
+public:
     type *isrecord(string name); // 判断是否属于该结构
 };
 
@@ -54,7 +55,9 @@ class FUNC // 类：函数
     string returnType;            // 返回值类型
     map<string, parameter> *list; // 参数列表
 
+public:
     parameter *isParameter(string name); // 判断该标识符是否是函数参数
+    int paraNum();                      // 返回list的元素数量
 };
 
 class TABLEITEM //类：符号表表项，代表每个标识符的信息
@@ -62,7 +65,7 @@ class TABLEITEM //类：符号表表项，代表每个标识符的信息
 public:
     string name;            // 名字
     type tp;                // 类型
-    int isConst;            //是否为常量
+    int isConst;            // 是否为常量
     int declarativeLine;    // 声明行
     vector<int> *usedLines; // 引用行
     int dimension;          // 数组维数（或参数个数）
@@ -118,6 +121,15 @@ parameter *FUNC::isParameter(string name)
     }
     else //否则返回NULL
         return NULL;
+}
+
+/**
+ * 返回list中元素数量
+ * @return int型
+ */
+int FUNC::paraNum()
+{
+    return list->size();
 }
 
 /**
