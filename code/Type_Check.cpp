@@ -105,7 +105,7 @@ string Change_Para(FUNC &fun, string code) //根据参数列表Para的信息修�
 bool Para_Check(FUNC &fun, string types, string code) //types以空格分隔,检查参数列表与types是否能够匹配
 {
     vector<string> ty = Split(types, ' '), name = Split(code, ',');
-    if (fun.Para_len() != ty.size())
+    if (fun.paraNum() != ty.size())
         return false;
 
     for (int i = 0; i < ty.size(); i++)
